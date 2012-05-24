@@ -8,7 +8,6 @@ import io.socket.SocketIOException;
 
 import java.net.MalformedURLException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Handler;
@@ -26,6 +25,9 @@ public class SocketIOManager implements IOCallback {
     }
 
     public SocketIO connect(String url) {
+        if (mSocket != null) {
+            return mSocket;
+        }
         try {
             mSocket = new SocketIO(url);
             mSocket.connect(this);
@@ -36,21 +38,13 @@ public class SocketIOManager implements IOCallback {
         return mSocket;
     }
 
-    private boolean isHandler() {
-        return sHandler != null ? true : false;
+    public void disconnect() {
+        mSocket.disconnect();
+        mSocket = null;
     }
 
-    private void setMessage(final String message, final int color) {
-        // WebSocketHandlerのonMessageは別スレッドなのでhandlerを用いてviewの書き換えを行う
-        sHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                // TextView messageArea = (TextView)
-                // activity.findViewById(R.id.message_area);
-                // messageArea.setText(message);
-                // messageArea.setTextColor(color);
-            }
-        });
+    private boolean isHandler() {
+        return sHandler != null ? true : false;
     }
 
     @Override
@@ -82,14 +76,9 @@ public class SocketIOManager implements IOCallback {
 
     @Override
     public void onMessage(JSONObject json, IOAcknowledge ack) {
-        try {
-            Log.i(TAG, "Server said:" + json.toString(2));
-        } catch (JSONException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+        Log.i(TAG, "Server said:" + json.toString());
         if (isHandler()) {
-            Message msg = sHandler.obtainMessage(SOCKETIO_JSON_MESSAGE, json);
+            Message msg = sHandler.obtainMessage(SOCKETIO_JSON_MESSAGE, json.toString());
             sHandler.sendMessage(msg);
         }
     }
