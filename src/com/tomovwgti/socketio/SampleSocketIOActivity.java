@@ -4,8 +4,8 @@ package com.tomovwgti.socketio;
 import io.socket.SocketIO;
 import io.socket.util.SocketIOManager;
 import net.arnx.jsonic.JSON;
+import net.arnx.jsonic.JSONException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -78,11 +78,14 @@ public class SampleSocketIOActivity extends Activity {
             @Override
             public void onClick(View v) {
                 EditText edit = (EditText) findViewById(R.id.send_message);
-                JSONObject json = new JSONObject();
+                Msg sendMessage = new Msg();
+                sendMessage.setValue(edit.getText().toString());
                 try {
-                    json.put("value", edit.getText().toString());
-                    mSocket.emit("message", json);
+                    mSocket.emit("message", new JSONObject(JSON.encode(sendMessage)));
                 } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (org.json.JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
