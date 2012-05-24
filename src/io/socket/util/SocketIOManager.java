@@ -39,8 +39,10 @@ public class SocketIOManager implements IOCallback {
     }
 
     public void disconnect() {
-        mSocket.disconnect();
-        mSocket = null;
+        if (mSocket != null) {
+            mSocket.disconnect();
+            mSocket = null;
+        }
     }
 
     private boolean isHandler() {
