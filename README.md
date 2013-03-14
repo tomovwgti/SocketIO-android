@@ -1,6 +1,8 @@
 Socket.IO for Android
 =============
 
+このコードは古いので[こちら](https://github.com/tomovwgti/Android-SocketIO)へ
+
 Socket.IOをAndroidクライアントで動作するようにしたものです。
 サンプルアプリになってます。
 
